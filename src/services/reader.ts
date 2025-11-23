@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const API_URL = "https://book-link-api.vercel.app/api/readers";
-
 export const getReader = async () => {
-    console.log(API_URL);
-    
-    const response = await axios.get(API_URL);
-    console.log(response);
-    return response.data.reader;
+  const response = await axios.get(API_URL);
+  console.log("API response:", response.data);
+  return response.data; // <-- FIXED
 };
+
+
+
 
 export const getReaderById = async () => {
     const response = await axios.get(`${API_URL}`);

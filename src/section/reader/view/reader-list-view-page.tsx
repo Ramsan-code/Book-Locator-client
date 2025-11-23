@@ -38,7 +38,6 @@ import {
 import { getReader } from "@/services/reader";
 import { ReaderItem } from "@/types/reader";
 
-
 export const columns: ColumnDef<ReaderItem>[] = [
   {
     id: "select",
@@ -49,104 +48,107 @@ export const columns: ColumnDef<ReaderItem>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
+
+  // ID
+  {
+    accessorKey: "_id",
+    header: "ID",
+    cell: ({ row }) => <div>{row.getValue("_id")}</div>,
+  },
+
+  // Name
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
+
+  // Email
   {
     accessorKey: "email",
-    header: ({ column }) => {
+    header: "Email",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+
+  // Role
+  {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => <div>{row.getValue("role")}</div>,
+  },
+
+  // Active Status
+  {
+    accessorKey: "isActive",
+    header: "Active",
+    cell: ({ row }) => (
+      <div>{row.getValue("isActive") ? "Active" : "Inactive"}</div>
+    ),
+  },
+
+  // Approval Status
+  {
+    accessorKey: "isApproved",
+    header: "Approved",
+    cell: ({ row }) => (
+      <div>{row.getValue("isApproved") ? "Approved" : "Pending"}</div>
+    ),
+  },
+
+  // Coordinates
+  {
+    accessorKey: "location",
+    header: "Coordinates",
+    cell: ({ row }) => {
+      const location = row.original.location;
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
+        <div>
+          {location?.coordinates
+            ? `${location.coordinates[0]}, ${location.coordinates[1]}`
+            : "No Location"}
+        </div>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
+
+  // Created Date
   {
     accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          CreatedAt
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: "Created At",
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("createdAt")}</div>
+      <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
     ),
   },
+
+  // Updated Date
   {
     accessorKey: "updatedAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          updatedAt
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: "Updated At",
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("updatedAt")}</div>
+      <div>{new Date(row.getValue("updatedAt")).toLocaleString()}</div>
     ),
   },
 
+  // __v (version)
   {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>View</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user._id)}
-            >
-              create
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    accessorKey: "__v",
+    header: "Version",
+    cell: ({ row }) => <div>{row.getValue("__v")}</div>,
   },
 ];
+
+
 
 export default function ReaderListView() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
